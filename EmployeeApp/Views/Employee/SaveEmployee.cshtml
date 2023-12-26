@@ -1,0 +1,270 @@
+﻿@model DAL.Entities.Employee
+
+
+@{
+    ViewData["Title"] = "Add Employee";
+    var errorMessage = TempData["errorMessage"]?.ToString();
+}
+
+<h3>@ViewData["Title"]?.ToString()</h3>
+<hr />
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger">
+        <b>Error : </b>@errorMessage
+        <button type="button" class="btn-clase float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row"> 
+    <form asp-action="SaveEmployee" class="form-inline" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row mb-3">
+            <label asp-for="FirstName" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="FirstName" class="form-control" placeholder="First Name" required />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="LastName" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="LastName" class="form-control" placeholder="Last Name" required />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row mb-3">
+            <label asp-for="EmailAddress" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="EmailAddress" class="form-control" placeholder="Email Address" required />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="MobileNumber" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="MobileNumber" class="form-control" placeholder="Mobile Number" required />
+                <span asp-validation-for="MobileNumber" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="PanNumber" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="PanNumber" class="form-control" oninput="this.value = this.value.toUpperCase()" placeholder="Pan Number" required />
+                <span asp-validation-for="PanNumber" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="PassportNumber" class="col-2 control-labe required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="PassportNumber" class="form-control" oninput="this.value = this.value.toUpperCase()" placeholder="Passport Number" required />
+                <span asp-validation-for="PassportNumber" class="text-danger"></span>
+                @* style="text-transform:uppercase" *@
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="DateOfBirth" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="DateOfBirth" class="form-control col-2" placeholder="Date of birth" required />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="DateOfJoinee" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="DateOfJoinee" class="form-control col-2" placeholder="Date of joinee" required />
+                <span asp-validation-for="DateOfJoinee" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="CountryId" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <select asp-for="CountryId" class="form-select" onchange="loadStates()">
+                    <option value="">Select Country</option>
+                    @if (ViewBag.Countries != null)
+                    {
+                        @foreach (var country in ViewBag.Countries)
+                        {
+                            <option value="@country.CountryId">@country.CountryName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+            
+        <div class="form-group row mb-3">
+            <label asp-for="StateId" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <select asp-for="StateId" class="form-select" onchange="loadCities()">
+                    <option value="">Select State</option>
+                    @if (ViewBag.States != null)
+                    {
+                        @foreach (var state in ViewBag.States)
+                        {
+                            <option value="@state.StateId">@state.StateName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row mb-3">
+            <label asp-for="CityId" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <select asp-for="CityId" class="form-select">
+                    <option value="">Select City</option>
+                    @if (ViewBag.Cities != null)
+                    {
+                        @foreach (var city in ViewBag.Cities)
+                        {
+                            <option value="@city.CityId">@city.CityName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label asp-for="ProfileImage" class="col-2 control-label required-field"></label>
+            <div class="col-md-6">
+                <input asp-for="ProfileImage" class="form-control col-4" type="file" class="form-control-file" accept=".jpg, .png"  />
+            </div>
+        </div> 
+        <fieldset class="form-group mb-3">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Gender</legend>
+                <div class="col-sm-10 ">
+                    <div class="form-check form-check-inline">
+                        <input asp-for="Gender" class="form-check-input" type="radio" name="Gender" id="Male" value="1" checked>
+                        <label class="form-check-label" for="Male">
+                            Male
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input asp-for="Gender" class="form-check-input" type="radio" name="Gender" id="Female" value="2">
+                        <label class="form-check-label" for="Female">
+                            Female
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group row mb-3">
+            <div class="col-sm-2">Active</div>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <input asp-for="ActiveStatus" class="form-check-input" type="checkbox" checked>
+                    <label asp-for="ActiveStatus" class="form-check-label">Active</label>
+                    </div>
+            </div>
+        </div> 
+
+        <div class="form-group row mb-3">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-success"> Save </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="MainIndex">Back to List</a>
+</div>
+
+
+
+<script>
+
+    var errorMessage = '@TempData["ErrorMessage"]';
+    var successMessage = '@TempData["SuccessMessage"]';
+
+    if (errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+        });
+    }
+
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: successMessage,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Index")';
+            }
+        });
+    }
+
+    // function loadStates() {
+    //     var countryId = $("#CountryId").val();
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/Employee/GetStatesByCountryId",
+    //         data: { countryId: countryId },
+    //         success: function (data) {
+    //             console.log(data);
+    //             $("#StateId").empty();
+    //             $("#StateId").append($('<option>', {
+    //                 value: "",
+    //                 text: "Select State"
+    //             }));
+    //             $.each(data, function (index, state) {
+    //                 $("#StateId").append($('<option>', {
+    //                     value: state.StateId,
+    //                     text: state.StateName
+    //                 }));
+    //             });
+
+    //             $("#CityId").empty();
+    //             $("#CityId").append($('<option>', {
+    //                 value: "",
+    //                 text: "Select City"
+    //             }));
+    //         },
+    //         error: function () {
+    //             console.log("Error fetching states");
+    //         }
+    //     });
+    // }
+
+    // function loadCities() {
+    //     var stateId = $("#StateId").val();
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/Employee/GetCitiesByStateId",
+    //         data: { stateId: stateId },
+    //         success: function (data) {
+    //             $("#CityId").empty();
+    //             $("#CityId").append($('<option>', {
+    //                 value: "",
+    //                 text: "Select City"
+    //             }));
+    //             $.each(data, function (index, city) {
+    //                 $("#CityId").append($('<option>', {
+    //                     value: city.CityId,
+    //                     text: city.CityName
+    //                 }));
+    //             });
+    //         },
+    //         error: function () {
+    //             console.log("Error fetching cities");
+    //         }
+    //     });
+    // }
+
+</script>
+
+<script src="~/js/saveEmp_validation.js"></script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

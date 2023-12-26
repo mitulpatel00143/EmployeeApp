@@ -1,0 +1,51 @@
+﻿@model List<DAL.Entities.EmployeeDetailsViewModel>
+
+
+<div class="mb-4">
+    <a class="btn btn-primary" asp-area="" asp-controller="Employee" asp-action="SaveEmployee"> <i class="fa-solid fa-user-plus"></i> Create Employee</a>
+</div>
+
+<div class="row mb-3">
+    <div class="table-responsive mb-4">
+        <table id="employeeDetail" class="">
+            <thead>
+                <tr>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>Email Address</th>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Pan No</th>
+                    <th>PassportNo</th>
+                    <th>Gender</th>
+                    <th>IsActive</th>
+                    <th>ProfileImage</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+</div>
+
+@section scripts {
+    <link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        var successMessage = '@TempData["SuccessMessage"]';
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: successMessage,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("MainIndex")';
+                }
+            });
+        }
+    </script>
+    <script src="~/js/mainindex.js"></script>
+}

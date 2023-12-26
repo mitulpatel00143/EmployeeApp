@@ -1,0 +1,103 @@
+﻿@model List<DAL.Entities.EmployeeDetailsViewModel>
+
+@{
+    ViewData["Title"] = "Employee";
+}
+
+<h3>@ViewData["Title"]?.ToString()</h3>
+<hr />
+
+<div class="">
+    <a class="btn btn-primary" asp-area="" asp-controller="Employee" asp-action="SaveEmployee"> <i class="fa-solid fa-user-plus"></i> Create Employee</a>   
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">FirstName</th>
+            <th scope="col">LastName</th>
+            <th scope="col">Email</th>
+            <th scope="col">Country</th>
+            <th scope="col">State</th>
+            <th scope="col">City</th>
+            <th scope="col">PanNumber</th>
+            <th scope="col">PassportNumber</th>
+            <th scope="col">ProfileImage</th>
+            <th scope="col">Gender</th>
+            <th scope="col">IsActive</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.FirstName</td>
+                <td>@employee.LastName</td>
+                <td>@employee.EmailAddress</td>
+                <td>@employee.CountryName</td>
+                <td>@employee.StateName</td>
+                <td>@employee.CityName</td>
+                <td>@employee.PanNumber</td>
+                <td>@employee.PassportNumber</td>
+                <td><img src="~/uploads/@employee.ProfileImage" alt="" width="30" height="30" /></td>
+                <td>@employee.Gender</td>
+                <td>@employee.ActiveStatus</td>
+                <td>
+                    <button class="btn btn-primary" onclick="EditEmployee('@employee.EmployeeCode')">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="SoftDelete('@employee.EmployeeCode')">
+                        <i class="fa-solid fa-trash"> Delete </i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 
+
+
+@* <table>
+    <tr>
+        @for (int i = 1; i <= Model.PageCount; i++)
+        {
+            <td>
+                @if (i != Model.CurrentPageIndex)
+                {
+                    <a class="btn btn-success" href="javascript:PagerClick(@i);"> @i </a>
+                }
+                else
+                {
+                    <a class="btn btn-primary" disabled"> @i </a>
+                }
+            </td>
+        }
+    </tr>
+</table>
+<input asp-for="CurrentPageIndex" type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" /> *@
+
+
+
+<script>
+    var successMessage = '@TempData["SuccessMessage"]';
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: successMessage,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Index")';
+            }
+        });
+    }
+
+    // function PagerClick(index) {
+    //     document.getElementById("hfCurrentPageIndex").value = index;
+    //     document.forms[0].submit();
+    // }
+
+</script>
+
+<script src="~/js/index_validation.js"></script>
+
+
